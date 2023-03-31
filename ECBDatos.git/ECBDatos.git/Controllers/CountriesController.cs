@@ -50,23 +50,39 @@ namespace ECBDatos.git.Controllers
         {
             return View();
         }
-
-        // POST: Countries/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //////////// HTTP POST - CREATE ACTION
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Country country)//el bind lo booro siempre
+        public async Task<IActionResult> Create(Country country)
         {
             if (ModelState.IsValid)
             {
-                country.id = Guid.NewGuid();
                 _context.Add(country);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
             return View(country);
         }
+
 
         // GET: Countries/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
@@ -84,6 +100,7 @@ namespace ECBDatos.git.Controllers
             return View(country);
         }
 
+        //////////// HTTP POST - EDIT ACTION
         // POST: Countries/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -102,19 +119,23 @@ namespace ECBDatos.git.Controllers
                 {
                     _context.Update(country);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException dbUpdateException)
                 {
-                    if (!CountryExists(country.id))
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
             return View(country);
         }
@@ -146,7 +167,7 @@ namespace ECBDatos.git.Controllers
             {
                 return Problem("Entity set 'DatabaseContext.Countries'  is null.");
             }
-            var country = await _context.Countries.FindAsync(id);
+            var country = await _context.Countries.FindAsync(id);//busca el registro por la PK
             if (country != null)
             {
                 _context.Countries.Remove(country);
