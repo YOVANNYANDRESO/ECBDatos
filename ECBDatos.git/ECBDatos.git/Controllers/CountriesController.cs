@@ -92,7 +92,7 @@ namespace ECBDatos.git.Controllers
                 return NotFound();
             }
 
-            var country = await _context.Countries.FindAsync(id);
+            Country country = await _context.Countries.FindAsync(id);
             if (country == null)
             {
                 return NotFound();

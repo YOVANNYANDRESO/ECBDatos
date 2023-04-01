@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ECBDatos.git.DAL.Entities.Country>
+﻿@model IEnumerable<ECBDatos.git.DAL.Entities.Category>
 
 @{
     ViewData["Title"] = "Index";
@@ -8,7 +8,7 @@
 
 
 
-<h1>Categorias</h1>
+
 
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">Crear nuevo Categoria</a>
@@ -19,10 +19,10 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Países</h3>
+                <h3 class="panel-title">Categorias</h3>
             </div>
             <div class="panel-body">
-                <table class="table table-hover table-responsive table-striped" id="CountryTable">
+                <table class="table table-hover table-responsive table-striped" id="CategoryTable">
 
 
                     <thead>
@@ -75,7 +75,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#CountryTable').DataTable({
+            $('#CategoryTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                 },
