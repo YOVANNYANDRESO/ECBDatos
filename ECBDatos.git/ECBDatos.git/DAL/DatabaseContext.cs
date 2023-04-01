@@ -12,11 +12,13 @@ namespace ECBDatos.git.DAL
         }
 
         public DbSet<Country>Countries { get; set; } //es el mapeo de las entidades y cada que cree una entidad debe hacer un DbSet y Countries es el nombre de la vble y en plural
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Country>().HasIndex(c => c.Name).IsUnique();
+            modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
         }
     }
 }
